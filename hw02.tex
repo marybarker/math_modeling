@@ -1,0 +1,40 @@
+\documentclass{article}
+\usepackage{xcolor, fontspec, listings, fullpage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def \hwnum{2}
+\def \hwdescription{GPU dot product of two vectors with fixed 1024 threads \\ using 2 methods: \\ (1) Number of blocks determined by vector length \\ (2) 2 blocks and iterations determined by vector length}
+\def \hwscript{hw02.cu}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstset{language=C++, basicstyle=\footnotesize, breaklines=true}
+\setmainfont[Path=/usr/share/fonts/truetype/calibri/]{Calibri.ttf}
+
+\begin{document}
+{\color{white}{thing}}
+\vspace{\stretch{1}}
+\begin{center}
+{
+	\fontsize{20pt}{20pt}\selectfont
+	Barker, Mary
+}
+
+\vspace{1cm}
+
+{
+	\fontsize{20pt}{20pt}\selectfont
+	Homework \hwnum
+}
+
+\vspace{1cm}
+
+{
+	\fontsize{20pt}{20pt}\selectfont
+	\hwdescription
+}
+
+\vspace{\stretch{1}}
+\end{center}
+\pagebreak
+\lstinputlisting{\hwscript}
+
+\end{document}

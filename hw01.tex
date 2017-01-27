@@ -1,0 +1,40 @@
+\documentclass{article}
+\usepackage{fontspec, listings, fullpage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def \hwnum{1}
+\def \hwdescription{this is some stuff that I will probably use}
+%\def \hwscript{BarkerHW1_CPU.cu, BarkerHW1_GPU.cu, BarkerHW1_Query.cu}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstset{language=C++, basicstyle=\footnotesize, breaklines=true}
+\setmainfont[Path=/usr/share/fonts/truetype/calibri/]{Calibri.ttf}
+
+\begin{document}
+\begin{center}
+{
+	\fontsize{20pt}{20pt}\selectfont
+	Barker, Mary
+}
+
+\vspace{\stretch{1}}
+
+{
+	\fontsize{20pt}{20pt}\selectfont
+	Homework \hwnum
+}
+
+\vspace{\stretch{1}}
+
+{
+	\fontsize{20pt}{20pt}\selectfont
+	\hwdescription
+}
+
+\vspace{\stretch{1}}
+\end{center}
+\pagebreak
+\lstinputlisting{BarkerHW1_CPU.cu}
+\lstinputlisting{BarkerHW1_GPU.cu}
+\lstinputlisting{BarkerHW1_Query.cu}
+
+\end{document}
