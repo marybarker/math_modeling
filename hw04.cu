@@ -18,8 +18,8 @@ float xMax =  2.0;
 float yMin = -2.0;
 float yMax =  2.0;
 
-float stepSizeX = (xMax - xMin)/((float)window_width);
-float stepSizeY = (yMax - yMin)/((float)window_height);
+float stepSizeX = (xMax - xMin)/((float)window_width - 1.0);
+float stepSizeY = (yMax - yMin)/((float)window_height - 1.0);
 
 float color (float x, float y) 
 {
@@ -62,9 +62,9 @@ void display(void)
 		x = xMin;
 		while(x <= xMax) 
 		{
-			pixels[k] = color(x,y);	//Red on or off returned from color
-			pixels[k+1] = 0.0; 	//Green off
-			pixels[k+2] = 0.0;	//Blue off
+			pixels[k] = 0.0;//color(x,y);	//Red on or off returned from color
+			pixels[k+1] = .4*color(x,y);//0.0; 	//Green off
+			pixels[k+2] = .4*color(x,y);//0.0;	//Blue off
 			k=k+3;			//Skip to next pixel
 			x += stepSizeX;
 		}
