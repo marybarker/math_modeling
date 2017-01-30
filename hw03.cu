@@ -121,18 +121,9 @@ int n_body()
 		//Move elements
 		for(i=0; i<N; i++)
 		{
-			if(time == 0.0)
-			{
-				vx[i] = fx[i] * dt;
-				vy[i] = fy[i] * dt;
-				vz[i] = fz[i] * dt;
-			}
-			else
-			{
-				vx[i] = vx[i] + fx[i] * dt;
-				vy[i] = vy[i] + fy[i] * dt;
-				vz[i] = vz[i] + fz[i] * dt;
-			}
+			vx[i] = vx[i] + fx[i] * dt;
+			vy[i] = vy[i] + fy[i] * dt;
+			vz[i] = vz[i] + fz[i] * dt;
 
 			px[i] += vx[i]*dt;
 			py[i] += vy[i]*dt;
