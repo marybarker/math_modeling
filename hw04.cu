@@ -1,87 +1,220 @@
-//nvcc fractalSimpleCPU.cu -o temp -lglut -lGL -lm
+/*
+	Mary Barker
+	Homework 4
 
+	2-body Serial simulation with openGL
+
+	To compile and run: 
+	gcc 2body3D.c -lglut -lm -lGLU -lGL
+
+	To stop hit "control c" in the window you launched it from.
+*/
 #include <GL/glut.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
+#define PI 3.141592654
 
-#define A  -0.624
-#define B  0.4351
+#define N 2
 
-unsigned int window_width = 1024;
-unsigned int window_height = 1024;
+#define XWindowSize 700
+#define YWindowSize 700
 
-float xMin = -2.0;
-float xMax =  2.0;
-float yMin = -2.0;
-float yMax =  2.0;
+#define STOP_TIME 100.0
+#define DT        0.0001
 
-float stepSizeX = (xMax - xMin)/((float)window_width - 1.0);
-float stepSizeY = (yMax - yMin)/((float)window_height - 1.0);
+#define GRAVITY 1.0 
+#define MASSBODY1 10.0
+#define MASSBODY2 10.0
 
-float color (float x, float y) 
+#define DRAW 10
+
+// Globals
+double px[N], py[N], pz[N], vx[N], vy[N], vz[N], fx[N], fy[N], fz[N], mass[N], G; 
+
+void set_initail_conditions()
 {
-	float mag,maxMag,t1;
-	float maxCount = 200;
-	float count = 0;
-	maxMag = 10;
-	mag = 0.0;
+	G = GRAVITY;
+	mass[0] = MASSBODY1;
+	mass[1] = MASSBODY2;
 	
-	while (mag < maxMag && count < maxCount) 
+	px[0] = 0.5;
+	py[0] = 0.0;
+	pz[0] = 0.0;
+	
+	px[1] = -0.5;
+	py[1] = 0.0;
+	pz[1] = 0.0;
+	
+	vx[0] = 0.0;
+	vy[0] = 1.0;
+	vz[0] = 0.0;
+	
+	vx[1] = 0.0;
+	vy[1] = -1.0;
+	vz[1] = 0.0;
+}
+
+void draw_picture()
+{
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	
+	glColor3d(1.0,1.0,0.5);
+	glPushMatrix();
+	glTranslatef(px[0], py[0], pz[0]);
+	glutSolidSphere(0.1,20,20);
+	glPopMatrix();
+	
+	glColor3d(1.0,0.5,1.0);
+	glPushMatrix();
+	glTranslatef(px[1], py[1], pz[1]);
+	glutSolidSphere(0.1,20,20);
+	glPopMatrix();
+	
+	glutSwapBuffers();
+}
+
+int n_body()
+{
+	double fx[N], fy[N], fz[N], f; 
+	double dx,dy,dz,d, dt;
+	double dvx,dvy,dvz,close_seperate;
+	int    tdraw = 0; int   tprint = 0;
+	double  time = 0.0;
+	int i,j;
+	
+	dt = DT;
+
+	while(time < STOP_TIME)
 	{
-		t1 = x;	
-		x = x*x - y*y + A;
-		y = (2.0 * t1 * y) + B;
-		mag = sqrt(x*x + y*y);
-		count++;
-	}
-	if(count < maxCount) 
-	{
-		return(1.0);
-	}
-	else
-	{
-		return(0.0);
+		for(i=0; i<N; i++)
+		{
+			fx[i] = 0.0;
+			fy[i] = 0.0;
+			fz[i] = 0.0;
+		}
+
+		//Get forces
+		for(i=0; i<N; i++)
+		{
+			for(j=i+1; j<N; j++)
+			{
+				dx = px[j] - px[i];
+				dy = py[j] - py[i];
+				dz = pz[j] - pz[i];
+
+				d = sqrt(dx*dx+dy*dy+dz*dz);
+
+				fx[i] += G*mass[j]*dx/(d*d*d);
+				fy[i] += G*mass[j]*dy/(d*d*d);
+				fz[i] += G*mass[j]*dz/(d*d*d);
+
+				fx[j] -= G*mass[i]*dx/(d*d*d);
+				fy[j] -= G*mass[i]*dy/(d*d*d);
+				fz[j] -= G*mass[i]*dz/(d*d*d);
+			}
+		}
+
+		//Move elements
+		for(i=0; i<N; i++)
+		{
+			vx[i] = vx[i] + fx[i] * dt;
+			vy[i] = vy[i] + fy[i] * dt;
+			vz[i] = vz[i] + fz[i] * dt;
+
+			px[i] += vx[i]*dt;
+			py[i] += vy[i]*dt;
+			pz[i] += vz[i]*dt;
+		}
+
+		if(tdraw == DRAW) 
+		{
+			draw_picture();
+			tdraw = 0;
+		}
+
+		time += dt;
+		tdraw++;
+		tprint++;
 	}
 }
 
-void display(void) 
-{ 
-	float *pixels; 
-	float x, y;
-	int k;
+void control()
+{	
+	int    tdraw = 0;
+	double  time = 0.0;
 
-	pixels = (float *)malloc(window_width*window_height*3*sizeof(float));
-	k=0;
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_DEPTH_BUFFER_BIT);
 
-	y = yMin;
-	while(y <= yMax) 
-	{
-		x = xMin;
-		while(x <= xMax) 
-		{
-			pixels[k] = 0.0;//color(x,y);	//Red on or off returned from color
-			pixels[k+1] = .4*color(x,y);//0.0; 	//Green off
-			pixels[k+2] = .4*color(x,y);//0.0;	//Blue off
-			k=k+3;			//Skip to next pixel
-			x += stepSizeX;
-		}
-		y += stepSizeY;
-	}
+	set_initail_conditions();
+	
+	draw_picture();
+	
+	n_body();
+	
+	printf("\n DONE \n");
+	while(1);
+}
 
-	glDrawPixels(window_width, window_height, GL_RGB, GL_FLOAT, pixels); 
-	glFlush(); 
+void Display(void)
+{
+	gluLookAt(0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glutSwapBuffers();
+	glFlush();
+	control();
+}
+
+void reshape(int w, int h)
+{
+	glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+
+	glMatrixMode(GL_PROJECTION);
+
+	glLoadIdentity();
+
+	glFrustum(-0.2, 0.2, -0.2, 0.2, 0.2, 150.0);
+
+	glMatrixMode(GL_MODELVIEW);
 }
 
 int main(int argc, char** argv)
-{ 
-   	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE);
-   	glutInitWindowSize(window_width, window_height);
-   	glutCreateWindow("Fractals man, fractals.");
-   	glutDisplayFunc(display);
-   	glutMainLoop();
+{
+	glutInit(&argc,argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB);
+	glutInitWindowSize(XWindowSize,YWindowSize);
+	glutInitWindowPosition(0,0);
+	glutCreateWindow("2 Body 3D");
+	GLfloat light_position[] = {1.0, 1.0, 1.0, 0.0};
+	GLfloat light_ambient[]  = {0.0, 0.0, 0.0, 1.0};
+	GLfloat light_diffuse[]  = {1.0, 1.0, 1.0, 1.0};
+	GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
+	GLfloat lmodel_ambient[] = {0.2, 0.2, 0.2, 1.0};
+	GLfloat mat_specular[]   = {1.0, 1.0, 1.0, 1.0};
+	GLfloat mat_shininess[]  = {10.0};
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glShadeModel(GL_SMOOTH);
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_DEPTH_TEST);
+	glutDisplayFunc(Display);
+	glutReshapeFunc(reshape);
+	glutMainLoop();
+	return 0;
 }
 

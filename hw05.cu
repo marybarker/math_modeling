@@ -2,7 +2,7 @@
 	Mary Barker
 	Homework 5
 
-	Fractals using GPU 
+	Fractals animation using GPU 
 
 	to compile: nvcc BarkerHW5.cu -lm -lGL -lGLU -lglut
 */
@@ -89,12 +89,20 @@ void display(void)
 
 	while(updating++ < num_time_iterations)
 	{
-
+		// Copy from CPU
 		cudaMemcpy(GPU_pixels, pixels, window_width*window_height*3*sizeof(float), cudaMemcpyHostToDevice);
+
+		// find updated color values based on A and B
 		calculate_colors<<<dimGrid, dimBlock>>>(xMin,stepSizeX, yMin,stepSizeY, window_width, window_height, GPU_pixels, A, B);
+
+		// Copy to CPU
 		cudaMemcpy(pixels, GPU_pixels, window_width*window_height*3*sizeof(float), cudaMemcpyDeviceToHost);
+
+		// Draw picture
 		glDrawPixels(window_width, window_height, GL_RGB, GL_FLOAT, pixels); 
 		glFlush(); 
+
+		// update seed values A & B
 		t = float(updating) / float(num_time_iterations);
 		A =-0.5 + 0.15 * cos(M_PI * 2.0 * t);
 		B = 0.5 + 0.15 * sin(M_PI * 2.0 * t);
@@ -104,7 +112,7 @@ void display(void)
 int main(int argc, char** argv)
 { 
 	dimGrid = MIN(window_width, 1024);
-	dimBlock = MIN(window_height, 1024);
+	dimBlock = (window_width*window_height - 1) / dimGrid + 1;
 
    	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE);
