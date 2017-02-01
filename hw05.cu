@@ -111,10 +111,8 @@ void display(void)
 
 int main(int argc, char** argv)
 { 
-	dimGrid = 1024;
-	dimBlock = 1024;
-	//dimGrid = MIN(window_width, 1024);
-	//dimBlock = (window_width*window_height - 1) / dimGrid + 1;
+	dimGrid = MIN(window_width, 1024);
+	dimBlock = (window_width*window_height - 1) / dimGrid.x + 1;
 
    	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE);
