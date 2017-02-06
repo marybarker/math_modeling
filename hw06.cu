@@ -2,8 +2,7 @@
  	Mary Barker
 	Homework 6
 
-	Vector dot product on GPU
-	to compile: nvcc BarkerHW6.cu
+	Vector dot product on GPU to compile: nvcc BarkerHW6.cu
 */
 #include <sys/time.h>
 #include <stdio.h>
@@ -30,7 +29,6 @@ void AllocateMemory()
 
 	block = MIN(1024, N);
 	grid = (N > 1024) ? ((N - 1) / block.x + 1) : 1;
-	printf("num threads: %d\t num blocks: %d\n", block.x, grid.x);
 }
 
 //Loads values into vectors that we will add.
@@ -72,9 +70,12 @@ __global__ void DotProduct(float *A, float *B, float *C, int n)
 		{
 			if(id < (offset + new_n))
 			{
-				C[id] += C[id+new_n];
-				if( (odd > 0) && (id < offset + 1) )
-					C[id] += C[id+2*new_n];
+				if(id + new_n < n)
+				{
+					C[id] += C[id+new_n];
+					if( (odd > 0) && (id < offset + 1) )
+						C[id] += C[id+2*new_n];
+				}
 			}
 		}
 		else
