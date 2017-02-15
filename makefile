@@ -1,4 +1,4 @@
-name=hw06
+name=hw08
 TEXTFILE = $(name).tex
 CUDAFILE = $(name).cu
 OUTCUDA = $(name).o

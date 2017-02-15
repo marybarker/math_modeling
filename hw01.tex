@@ -1,15 +1,18 @@
 \documentclass{article}
-\usepackage{fontspec, listings, fullpage}
+\usepackage{fontspec, listings, fullpage, xcolor}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def \hwnum{1}
-\def \hwdescription{this is some stuff that I will probably use}
+\def \hwdescription{Querying GPU devices, Dot product on GPU and CPU}
 %\def \hwscript{BarkerHW1_CPU.cu, BarkerHW1_GPU.cu, BarkerHW1_Query.cu}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \lstset{language=C++, basicstyle=\footnotesize, breaklines=true}
+%\setmainfont[Path=/usr/local/texlive/2012/texmf/fonts/calibri/]{Calibri.ttf}
 \setmainfont[Path=/usr/share/fonts/truetype/calibri/]{Calibri.ttf}
 
 \begin{document}
+{\color{white}{thing}}
+\vspace{\stretch{1}}
 \begin{center}
 {
 	\fontsize{20pt}{20pt}\selectfont
@@ -23,14 +26,14 @@
 	Mathematical Modeling, Spring 2017
 }
 
-\vspace{\stretch{1}}
+\vspace{1cm}
 
 {
 	\fontsize{20pt}{20pt}\selectfont
 	Homework \hwnum
 }
 
-\vspace{\stretch{1}}
+\vspace{1cm}
 
 {
 	\fontsize{20pt}{20pt}\selectfont
@@ -40,8 +43,10 @@
 \vspace{\stretch{1}}
 \end{center}
 \pagebreak
-\lstinputlisting{BarkerHW1_CPU.cu}
-\lstinputlisting{BarkerHW1_GPU.cu}
 \lstinputlisting{BarkerHW1_Query.cu}
+\pagebreak
+\lstinputlisting{BarkerHW1_CPU.cu}
+\pagebreak
+\lstinputlisting{BarkerHW1_GPU.cu}
 
 \end{document}

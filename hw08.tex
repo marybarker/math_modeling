@@ -1,0 +1,69 @@
+\documentclass[11pt]{article}
+\usepackage{fontspec, listings, fullpage, xcolor, verbatim, setspace}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def \hwnum{8}
+\def \hwdescription{Find the problem with GPU Dot product with multiple blocks}
+\def \hwscript{hw08.cu}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagenumbering{gobble}
+\lstset{language=C++, basicstyle=\footnotesize, breaklines=true}
+%\setmainfont[Path=/usr/share/fonts/truetype/calibri/]{Calibri.ttf}
+\setmainfont[Path=/usr/local/texlive/2012/texmf/fonts/calibri/]{Calibri.ttf}
+
+\begin{document}
+{\color{white}{thing}}
+\vspace{\stretch{1}}
+\begin{center}
+{
+	\fontsize{20pt}{20pt}\selectfont
+	Barker, Mary
+}
+
+\vspace{1cm}
+
+{
+	\fontsize{20pt}{20pt}\selectfont
+	Mathematical Modeling, Spring 2017
+}
+
+\vspace{1cm}
+
+{
+	\fontsize{20pt}{20pt}\selectfont
+	Homework \hwnum
+}
+
+\vspace{1cm}
+
+{
+	\fontsize{20pt}{20pt}\selectfont
+	\hwdescription
+}
+
+\vspace{\stretch{1}}
+\end{center}
+\pagebreak
+\doublespace
+First thing I did was added the check \verb|if(threadIdx.x < fold)| to check that only 
+threads in the first half of each fold is aggregating values from the second half. 
+
+Next bug: in the check statement for odd sized folds, I changed it so that 
+\verb|id + (fold - 1) < n| since we are in c-indexing (starting at 0 rather than 1)
+
+After printing out each of the \verb|blockDim.x| entries of the \verb|C_CPU| vector, 
+I discovered that the algorithm did compute the dot product correctly and also folded correctly. 
+But somehow when adding up correct values, the end result was off by one. This is because 
+the values were stored as floats, where the precision does not allow for certain numbers to 
+be represented (in particular, values around 55,555,555-55,555,560) using the 
+restricted mantissa of a float. 
+So although those vectors were accurately multiplied and condensed into the first 
+index on each block, the 
+summing up was not accurately recording the output until the results were stored in a 
+\verb|double| rather than a \verb|float|. 
+
+\pagebreak
+\lstinputlisting{\hwscript}
+
+\end{document}
+

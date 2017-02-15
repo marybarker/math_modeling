@@ -1,11 +1,12 @@
 \documentclass{article}
-\usepackage{xcolor, fontspec, listings, fullpage}
+\usepackage{fontspec, listings, fullpage, xcolor}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def \hwnum{2}
-\def \hwdescription{GPU dot product of two vectors with fixed 1024 threads \\ using 2 methods: \\ (1) Number of blocks determined by vector length \\ (2) 2 blocks and iterations determined by vector length}
-\def \hwscript{hw02.cu}
+\def \hwnum{7}
+\def \hwdescription{GPU Dot product with multiple blocks}
+\def \hwscript{hw07.cu}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\pagenumbering{gobble}
 \lstset{language=C++, basicstyle=\footnotesize, breaklines=true}
 \setmainfont[Path=/usr/share/fonts/truetype/calibri/]{Calibri.ttf}
 %\setmainfont[Path=/usr/local/texlive/2012/texmf/fonts/calibri/]{Calibri.ttf}
