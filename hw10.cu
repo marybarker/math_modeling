@@ -3,7 +3,7 @@
 	Ray Tracing with constant memory
 
 	to compile and run: 
-		nvcc Barker9.cu -lm -lGL -lGLU -lglut
+		nvcc Barker10.cu -lm -lGL -lGLU -lglut
 		./a.out
 */
 #include <GL/glut.h>
@@ -21,11 +21,12 @@
 #define ymin -50
 #define ymax  50
 
-struct Sphere{
-	float r, float g, float b;
-	float x, float y, float z;
+struct Sphere {
+	float r, g, b;
+	float x, y, z;
 	float radius;
-}
+};
+
 Sphere s[SPHERES];
 __constant__ Sphere GPUs[SPHERES];
 
@@ -66,12 +67,12 @@ __global__ void trace_rays(float * pix, float dx, float dy, int nx, int ny) {
 
 		for(int j = 0; j < SPHERES; j++){
 
-			float n, t = hit(s[j].x, s[j].y, s[j].z, s[j].radius, xx, yy, &n);
+			float n, t = hit(GPUs[j].x, GPUs[j].y, GPUs[j].z, GPUs[j].radius, xx, yy, &n);
 
 			if(t > maxz){
-				rr = n * s[j].r;
-				gg = n * s[j].g;
-				bb = n * s[j].b;
+				rr = n * GPUs[j].r;
+				gg = n * GPUs[j].g;
+				bb = n * GPUs[j].b;
 				maxz = t;
 			}
 		}
@@ -84,9 +85,6 @@ __global__ void trace_rays(float * pix, float dx, float dy, int nx, int ny) {
 void allocate_memory() {
 	pixels = (float*)malloc(3*window_width*window_height * sizeof(float));
 	cudaMalloc(&GPUpixels, 3*window_width*window_height * sizeof(float));
-
-	cudaMemcpyToSymbol(GPUs, s, SPHERES*sizeof(Sphere));
-
 	for(int i = 0; i < SPHERES; i++){
 		s[i].x = 		rnd(100.0f) - 50;
 		s[i].y = 		rnd(100.0f) - 50;
@@ -96,6 +94,7 @@ void allocate_memory() {
 		s[i].b = 		rnd(1.0f);
 		s[i].radius =	 	rnd(10.0f) + 2;
 	}
+	cudaMemcpyToSymbol(GPUs, s, SPHERES*sizeof(Sphere));
 }
 
 void display(void) { 

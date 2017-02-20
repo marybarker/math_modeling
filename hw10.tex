@@ -1,0 +1,54 @@
+\documentclass[11pt]{article}
+\usepackage{fontspec, listings, fullpage, xcolor, verbatim, setspace}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def \hwnum{10}
+\def \hwdescription{Ray Tracing on GPU with Constant Memory}
+\def \hwscript{hw10.cu}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagenumbering{gobble}
+\lstset{language=C++, basicstyle=\footnotesize, breaklines=true}
+\setmainfont[Path=/usr/share/fonts/truetype/calibri/]{Calibri.ttf}
+%\setmainfont[Path=/usr/local/texlive/2012/texmf/fonts/calibri/]{Calibri.ttf}
+
+\begin{document}
+{\color{white}{thing}}
+\vspace{\stretch{1}}
+\begin{center}
+{
+	\fontsize{20pt}{20pt}\selectfont
+	Barker, Mary
+}
+
+\vspace{1cm}
+
+{
+	\fontsize{20pt}{20pt}\selectfont
+	Mathematical Modeling, Spring 2017
+}
+
+\vspace{1cm}
+
+{
+	\fontsize{20pt}{20pt}\selectfont
+	Homework \hwnum
+}
+
+\vspace{1cm}
+
+{
+	\fontsize{20pt}{20pt}\selectfont
+	\hwdescription
+}
+
+\vspace{\stretch{1}}
+\end{center}
+\pagebreak
+\begin{center}
+\includegraphics[width=0.8\textwidth]{hw10picture}
+\end{center}
+\pagebreak
+\lstinputlisting{\hwscript}
+
+\end{document}
+
